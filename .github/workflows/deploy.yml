@@ -38,7 +38,7 @@ jobs:
           
           if [ "$CHECKS" != "success" ]; then
             TEXT="❌ Тесты упал%0A${{ github.repository }} @ ${{ github.ref_name }}%0AСмотри: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          elseif [ "$DEPLOY" != "success" ]; then
+          elif [ "$DEPLOY" != "success" ]; then
             TEXT="❌ Деплой упал%0A${{ github.repository }} @ ${{ github.ref_name }}%0AСмотри: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           else 
             TEXT="✅ Деплой успешен%0A${{ github.repository }} @ ${{ github.ref_name }}"
