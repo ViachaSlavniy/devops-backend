@@ -1,15 +1,14 @@
 import { Module } from '@nestjs/common';
-import {MetricsController} from "./metrics.controller";
-import {collectDefaultMetrics} from "prom-client";
+import { MetricsController } from './metrics.controller';
+import { collectDefaultMetrics } from 'prom-client';
 
 @Module({
-  imports: [
-  ],
+  imports: [],
   controllers: [MetricsController],
   providers: [],
 })
 export class MetricsModule {
   constructor() {
-    collectDefaultMetrics()
+    collectDefaultMetrics();
   }
 }
