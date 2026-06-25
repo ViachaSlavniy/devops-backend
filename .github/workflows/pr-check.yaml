@@ -18,5 +18,4 @@ jobs:
       - name: Линтинг
         run: npm run lint
 
-      - name: Запуск тестов
-        run: npm run test
+      - uses: ./.github/workflows/test.yaml
