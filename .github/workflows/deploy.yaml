@@ -1,0 +1,28 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  checks:
+    uses: ./.github/workflows/pr-check.yaml
+
+  deploy:
+    needs: checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Деплой с использованием SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /var/www/myapp/backend
+            git pull origin main
+            cd /var/www/myapp
+            docker compose up --build -d backend
+
+
