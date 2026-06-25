@@ -17,5 +17,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY_TEST }}
           script: |
             cd /home/deploy/vchch.xyz
-            touch test.txt
+            touch test123.txt
           
