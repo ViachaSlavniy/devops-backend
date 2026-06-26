@@ -17,6 +17,7 @@ describe('AppController (e2e)', () => {
   });
 
   it('/ (GET)', () => {
+    if (process.version.startsWith('v22')) throw new Error('test')
     return request(app.getHttpServer())
       .get('/')
       .expect(200)
