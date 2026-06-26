@@ -15,7 +15,7 @@ jobs:
           - node-version: 24
             experimental: true
       fail-fast: false
-    continue-on-error: ${{ maxtrix.experimental }}
+    continue-on-error: ${{ matrix.experimental }}
 
     steps:
       - uses: actions/checkout@v4
