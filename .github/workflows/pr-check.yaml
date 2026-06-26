@@ -16,7 +16,7 @@ jobs:
             experimental: true
       fail-fast: false
 
-    continue-on-error: ${{ matrix.experimental }}
+    continue-on-error: ${{ matrix.experimental == true }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
