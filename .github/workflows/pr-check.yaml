@@ -15,7 +15,7 @@ jobs:
           - node-version: 24
             experimental: true
       fail-fast: false
-    continue-on-error: ${{ matrix.experimental }}
+
 
     steps:
       - uses: actions/checkout@v4
@@ -30,4 +30,5 @@ jobs:
         run: npm run lint
 
       - name: Запуск тестов
+        continue-on-error: ${{ matrix.experimental }}
         run: npm run test
