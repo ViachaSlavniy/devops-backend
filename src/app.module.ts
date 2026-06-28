@@ -1,7 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
-import { AppService } from './app.service__';
+import { AppService } from './app.service';
 import { MetricsModule } from './metrics.module';
 import { ConfigModule } from '@nestjs/config';
 import { MetricsMiddleware } from './metrics.middleware';
