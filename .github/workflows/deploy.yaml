@@ -7,27 +7,31 @@ on:
 jobs:
   checks:
     uses: ./.github/workflows/pr-check.yaml
-  deploy-docker:
+  build:
     needs: checks
     runs-on: ubuntu-latest
     env:
       DOCKER_USER: ${{ secrets.DOCKER_USER }}
-      REPO_NAME: ${{ github.event.repository.name }}
-      COMMIT_SHA: ${{ github.sha }}
+      REPO_NAME: devops-backend
+      COMMIT_SHA: sha-${{ github.sha }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Build Docker Images
+        env:
+          IMAGE_SHA: $DOCKER_USER/$REPO_NAME:$COMMIT_SHA
+          IMAGE_LATEST: $DOCKER_USER/$REPO_NAME:latest
         run: |
-          docker build -t "$DOCKER_USER/$REPO_NAME:$COMMIT_SHA" -t "$DOCKER_USER/$REPO_NAME:latest" .
+          docker build -t "IMAGE_SHA" -t "IMAGE_LATEST" .
 
       - name: Login and Push to Docker Hub
         run: |
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "$DOCKER_USER" --password-stdin
           docker push -a "$DOCKER_USER/$REPO_NAME"
+          echo "image_sha=$IMAGE_SHA" >> $GITHUB_OUTPUT
 
-  update-vps:
-    needs: [checks, deploy-docker]
+  deploy:
+    needs: [checks, build]
     runs-on: ubuntu-latest
 
     steps:
@@ -39,19 +43,19 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /var/www/myapp
-            docker pull $DOCKER_USER/$REPO_NAME:$COMMIT_SHA
-            docker compose up --build -d backend
+            sed -i "s|DOCKER_BACKEND_IMAGE=.*|DOCKER_BACKEND_IMAGE=${{ needs.build.outputs.image_sha }}|" .env
+            docker compose up --build -d --no-deps backend
 
   notify:
-    needs: [checks, deploy-docker, update-vps]
+    needs: [checks, build, deploy]
     runs-on: ubuntu-latest
     if: always()
     steps:
       - name: Notify Telegram
         run: |
           CHECKS="${{ needs.checks.result }}"
-          DEPLOY_DOCKER="${{ needs.deploy-docker.result }}"
-          UPDATE_VPS="${{ needs.update-vps.result }}"
+          DEPLOY_DOCKER="${{ needs.build.result }}"
+          UPDATE_VPS="${{ needs.deploy.result }}"
           
           if [ "$CHECKS" != "success" ]; then
             TEXT="❌ Тесты упали%0A${{ github.repository }} @ ${{ github.ref_name }}%0AСмотри: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
