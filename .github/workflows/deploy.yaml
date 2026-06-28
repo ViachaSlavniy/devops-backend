@@ -39,7 +39,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /var/www/myapp
-            docker pull "$DOCKER_USER/$REPO_NAME:$COMMIT_SHA"
+            docker pull ${{ secrets.DOCKER_USER }}/${{ github.event.repository.name }}:${{ github.sha }}"
             docker compose up --build -d backend
 
   notify:
