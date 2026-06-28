@@ -10,17 +10,21 @@ jobs:
   deploy-docker:
     needs: checks
     runs-on: ubuntu-latest
+    env:
+      DOCKER_USER: ${{ secrets.DOCKER_USER }}
+      REPO_NAME: ${{ github.event.repository.name }}
+      COMMIT_SHA: ${{ github.sha }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Build Docker Images
         run: |
-          docker build -t ${{secrets.DOCKER_USER}}/${{github.name}}:${{github.sha}} -t ${{secrets.DOCKER_USER}}/${{github.name}}:latest .
+          docker build -t $DOCKER_USER/$REPO_NAME:$COMMIT_SHA -t $DOCKER_USER/$REPO_NAME:latest .
 
       - name: Login and Push to Docker Hub
         run: |
-          echo "${{ secrets.DOCKER_TOKEN }}" | "docker login -u ${{secrets.DOCKER_USER}} --password-stdin"
-          docker push -a ${{secrets.DOCKER_USER}}/${{github.repository}}
+          echo "${{ secrets.DOCKER_TOKEN }}" | "docker login -u $DOCKER_USER --password-stdin"
+          docker push -a $DOCKER_USER/$REPO_NAME
 
   update-vps:
     needs: [checks, deploy-docker]
@@ -35,7 +39,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /var/www/myapp
-            docker pull ${{secrets.DOCKER_USER}}/${{github.name}}:${{github.sha}}
+            docker pull $DOCKER_USER/$REPO_NAME:$COMMIT_SHA
             docker compose up --build -d backend
 
   notify:
