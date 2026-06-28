@@ -19,12 +19,12 @@ jobs:
 
       - name: Build Docker Images
         run: |
-          docker build -t $DOCKER_USER/$REPO_NAME:$COMMIT_SHA -t $DOCKER_USER/$REPO_NAME:latest .
+          docker build -t "$DOCKER_USER/$REPO_NAME:$COMMIT_SHA" -t "$DOCKER_USER/$REPO_NAME:latest" .
 
       - name: Login and Push to Docker Hub
         run: |
-          echo "${{ secrets.DOCKER_TOKEN }}" | "docker login -u $DOCKER_USER --password-stdin"
-          docker push -a $DOCKER_USER/$REPO_NAME
+          echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "$DOCKER_USER" --password-stdin
+          docker push -a "$DOCKER_USER/$REPO_NAME"
 
   update-vps:
     needs: [checks, deploy-docker]
@@ -39,7 +39,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /var/www/myapp
-            docker pull $DOCKER_USER/$REPO_NAME:$COMMIT_SHA
+            docker pull "$DOCKER_USER/$REPO_NAME:$COMMIT_SHA"
             docker compose up --build -d backend
 
   notify:
