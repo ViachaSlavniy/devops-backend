@@ -29,11 +29,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Echo objects values
+        env:
+          GITHUB_CONTEXT: ${{ toJSON(github) }}
+          NEEDS_CONTEXT: ${{ toJSON(needs) }}
+          SECRETS_CONTEXT: ${{ toJSON(secrets) }}
+          VARS_CONTEXT: ${{ toJSON(vars) }}
+          INPUTS_CONTEXT: ${{ toJSON(inputs) }}
+          STEPS_CONTEXT: ${{ toJSON(steps) }}
+          RUNNER_CONTEXT: ${{ toJSON(runner) }}
         run: |
-          echo ${{ github }}
-          echo ${{ needs }}
-          echo ${{ secrets }}
-          echo ${{ vars }}
+          echo "GITHUB_CONTEXT - ${{ GITHUB_CONTEXT }}"
+          echo "NEEDS_CONTEXT - ${{ NEEDS_CONTEXT }}"
+          echo "SECRETS_CONTEXT - ${{ SECRETS_CONTEXT }}"
+          echo "VARS_CONTEXT - ${{ VARS_CONTEXT }}"
+          echo "INPUTS_CONTEXT - ${{ INPUTS_CONTEXT }}"
+          echo "STEPS_CONTEXT - ${{ STEPS_CONTEXT }}"
+          echo "RUNNER_CONTEXT - ${{ RUNNER_CONTEXT }}"
 
 
   notify:
