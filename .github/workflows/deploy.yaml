@@ -18,17 +18,14 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Build Docker Images
-        env:
-          IMAGE_SHA: "$DOCKER_USER/$REPO_NAME:$COMMIT_SHA"
-          IMAGE_LATEST: "$DOCKER_USER/$REPO_NAME:latest"
         run: |
-          docker build -t "$IMAGE_SHA" -t "$IMAGE_LATEST" .
+          docker build -t "$DOCKER_USER/$REPO_NAME:$COMMIT_SHA" -t "$DOCKER_USER/$REPO_NAME:latest" .
 
       - name: Login and Push to Docker Hub
         run: |
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "$DOCKER_USER" --password-stdin
           docker push -a "$DOCKER_USER/$REPO_NAME"
-          echo "image_sha=$IMAGE_SHA" >> $GITHUB_OUTPUT
+          echo "image_sha=$DOCKER_USER/$REPO_NAME:$COMMIT_SHA" >> $GITHUB_OUTPUT
 
   deploy:
     needs: [checks, build]
