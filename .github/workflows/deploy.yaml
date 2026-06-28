@@ -19,7 +19,7 @@ jobs:
 
       - name: Build Docker Images
         run: |
-          docker build -t "$DOCKER_USER/$REPO_NAME:$COMMIT_SHA" -t "$DOCKER_USER/$REPO_NAME:latest .
+          docker build -t "$DOCKER_USER/$REPO_NAME:$COMMIT_SHA" -t "$DOCKER_USER/$REPO_NAME:latest" .
 
       - name: Login and Push to Docker Hub
         run: |
