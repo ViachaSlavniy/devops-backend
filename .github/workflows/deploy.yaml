@@ -10,6 +10,8 @@ jobs:
   build:
     needs: checks
     runs-on: ubuntu-latest
+    outputs:
+      image_sha: ${{ steps.push.outputs.image_sha }}
     env:
       DOCKER_USER: ${{ secrets.DOCKER_USER }}
       REPO_NAME: devops-backend
