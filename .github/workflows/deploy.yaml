@@ -19,7 +19,7 @@ jobs:
 
       - name: Build Docker Images
         run: |
-          docker build -t "$DOCKER_USER/$REPO_NAME:$COMMIT_SHA" -t "$DOCKER_USER/$REPO_NAME:latest" .
+          docker build -t "$DOCKER_USER/$REPO_NAME:$COMMIT_SHA" -t "$DOCKER_USER/$REPO_NAME:latest .
 
       - name: Login and Push to Docker Hub
         run: |
@@ -50,12 +50,15 @@ jobs:
       - name: Notify Telegram
         run: |
           CHECKS="${{ needs.checks.result }}"
-          DEPLOY="${{ needs.deploy.result }}"
+          DEPLOY_DOCKER="${{ needs.deploy-docker.result }}"
+          UPDATE_VPS="${{ needs.update-vps.result }}"
           
           if [ "$CHECKS" != "success" ]; then
             TEXT="❌ Тесты упали%0A${{ github.repository }} @ ${{ github.ref_name }}%0AСмотри: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          elif [ "$DEPLOY" != "success" ]; then
-            TEXT="❌ Деплой упал%0A${{ github.repository }} @ ${{ github.ref_name }}%0AСмотри: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          elif [ "DEPLOY_DOCKER" != "success" ]; then
+            TEXT="❌ Обновление образа в Docker Hub упало%0A${{ github.repository }} @ ${{ github.ref_name }}%0AСмотри: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          elif [ "UPDATE_VPS" != "success" ]; then
+            TEXT="❌ Обновление VPS упало%0A${{ github.repository }} @ ${{ github.ref_name }}%0AСмотри: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           else
             TEXT="✅ Деплой успешен%0A${{ github.repository }} | Автор: ${{github.actor}} @ ${{ github.ref_name }}"
           fi
