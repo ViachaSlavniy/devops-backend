@@ -40,7 +40,7 @@ jobs:
           elif [ "$DEPLOY" != "success" ]; then
             TEXT="❌ Деплой упал%0A${{ github.repository }} @ ${{ github.ref_name }}%0AСмотри: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           else
-            TEXT="✅ Деплой успешен%0A${{ github.repository }} @ ${{ github.ref_name }}"
+            TEXT="✅ Деплой успешен%0A${{ github.repository }} | Автор: ${{github.actor}} @ ${{ github.ref_name }}"
           fi
           
           curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
