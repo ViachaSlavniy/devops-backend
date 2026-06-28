@@ -55,9 +55,9 @@ jobs:
           
           if [ "$CHECKS" != "success" ]; then
             TEXT="❌ Тесты упали%0A${{ github.repository }} @ ${{ github.ref_name }}%0AСмотри: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          elif [ "DEPLOY_DOCKER" != "success" ]; then
+          elif [ "$DEPLOY_DOCKER" != "success" ]; then
             TEXT="❌ Обновление образа в Docker Hub упало%0A${{ github.repository }} @ ${{ github.ref_name }}%0AСмотри: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          elif [ "UPDATE_VPS" != "success" ]; then
+          elif [ "$UPDATE_VPS" != "success" ]; then
             TEXT="❌ Обновление VPS упало%0A${{ github.repository }} @ ${{ github.ref_name }}%0AСмотри: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           else
             TEXT="✅ Деплой успешен%0A${{ github.repository }} | Автор: ${{github.actor}} @ ${{ github.ref_name }}"
