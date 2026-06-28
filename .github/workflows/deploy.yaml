@@ -38,13 +38,13 @@ jobs:
           STEPS_CONTEXT: ${{ toJSON(steps) }}
           RUNNER_CONTEXT: ${{ toJSON(runner) }}
         run: |
-          echo "GITHUB_CONTEXT - ${{ GITHUB_CONTEXT }}"
-          echo "NEEDS_CONTEXT - ${{ NEEDS_CONTEXT }}"
-          echo "SECRETS_CONTEXT - ${{ SECRETS_CONTEXT }}"
-          echo "VARS_CONTEXT - ${{ VARS_CONTEXT }}"
-          echo "INPUTS_CONTEXT - ${{ INPUTS_CONTEXT }}"
-          echo "STEPS_CONTEXT - ${{ STEPS_CONTEXT }}"
-          echo "RUNNER_CONTEXT - ${{ RUNNER_CONTEXT }}"
+          echo "GITHUB_CONTEXT - $GITHUB_CONTEXT"
+          echo "NEEDS_CONTEXT - $NEEDS_CONTEXT"
+          echo "SECRETS_CONTEXT - $SECRETS_CONTEXT"
+          echo "VARS_CONTEXT - $VARS_CONTEXT"
+          echo "INPUTS_CONTEXT - $INPUTS_CONTEXT"
+          echo "STEPS_CONTEXT - $STEPS_CONTEXT"
+          echo "RUNNER_CONTEXT - $RUNNER_CONTEXT"
 
 
   notify:
