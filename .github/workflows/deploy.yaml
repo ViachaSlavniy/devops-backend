@@ -33,7 +33,7 @@ jobs:
           echo ${{ github }}
           echo ${{ needs }}
           echo ${{ secrets }}
-          echo ${{ variables }}
+          echo ${{ vars }}
 
 
   notify:
