@@ -7,9 +7,23 @@ on:
 jobs:
   checks:
     uses: ./.github/workflows/pr-check.yaml
-
-  deploy:
+  deploy-docker:
     needs: checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker Images
+        run: |
+          docker build -t ${{secrets.DOCKER_USER}}/${{github.repository}}:${{github.sha}} -t ${{secrets.DOCKER_USER}}/${{github.repository}}:latest .
+
+      - name: Login and Push to Docker Hub
+        run: |
+          echo "${{ secrets.DOCKER_TOKEN }}" | "docker login -u ${{secrets.DOCKER_USER}} --password-stdin"
+          docker push -a ${{secrets.DOCKER_USER}}/${{github.repository}}
+
+  update-vps:
+    needs: [checks, deploy-docker]
     runs-on: ubuntu-latest
 
     steps:
@@ -20,13 +34,12 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /var/www/myapp/backend
-            git pull origin main
             cd /var/www/myapp
+            docker pull ${{secrets.DOCKER_USER}}/${{github.repository}}:${{github.sha}}
             docker compose up --build -d backend
 
   notify:
-    needs: [checks, deploy]
+    needs: [checks, deploy-docker, update-vps]
     runs-on: ubuntu-latest
     if: always()
     steps:
