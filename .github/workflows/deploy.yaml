@@ -25,6 +25,16 @@ jobs:
             cd /var/www/myapp
             docker compose up --build -d backend
 
+  echo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo objects values
+        run: |
+          echo ${{ github }}
+          echo ${{ needs }}
+          echo ${{ secrets }}
+          echo ${{ variables }}
+
 
   notify:
     needs: [checks, deploy]
