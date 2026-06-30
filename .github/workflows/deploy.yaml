@@ -48,25 +48,9 @@ jobs:
 
   notify:
     needs: [checks, build, deploy]
-    runs-on: ubuntu-latest
     if: always()
-    steps:
-      - name: Notify Telegram
-        run: |
-          CHECKS="${{ needs.checks.result }}"
-          DEPLOY_DOCKER="${{ needs.build.result }}"
-          UPDATE_VPS="${{ needs.deploy.result }}"
-          
-          if [ "$CHECKS" != "success" ]; then
-            TEXT="❌ Тесты упали%0A${{ github.repository }} @ ${{ github.ref_name }}%0AСмотри: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          elif [ "$DEPLOY_DOCKER" != "success" ]; then
-            TEXT="❌ Обновление образа в Docker Hub упало%0A${{ github.repository }} @ ${{ github.ref_name }}%0AСмотри: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          elif [ "$UPDATE_VPS" != "success" ]; then
-            TEXT="❌ Обновление VPS упало%0A${{ github.repository }} @ ${{ github.ref_name }}%0AСмотри: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          else
-            TEXT="✅ Деплой успешен%0A${{ github.repository }} | Автор: ${{github.actor}} @ ${{ github.ref_name }}"
-          fi
-          
-          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
-            -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
-            -d "text=$TEXT"
+    uses: ./.github/workflows/notify.yaml
+    secrets:
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+
