@@ -2,6 +2,16 @@ name: Notify
 
 on:
   workflow_call:
+    inputs:
+      checks_result:
+        required: true
+        type: string
+      build_result:
+        required: true
+        type: string
+      deploy_result:
+        required: true
+        type: string
     secrets:
       TELEGRAM_BOT_TOKEN:
         required: true
@@ -14,15 +24,15 @@ jobs:
     steps:
       - name: Notify Telegram
         run: |
-          CHECKS="${{ needs.checks.result }}"
-          DEPLOY_DOCKER="${{ needs.build.result }}"
-          UPDATE_VPS="${{ needs.deploy.result }}"
+          CHECKS="${{ inputs.checks_result }}"
+          BUILD_DOCKER="${{ inputs.build_result }}"
+          DEPLOY="${{ inputs.deploy_result }}"
 
           if [ "$CHECKS" != "success" ]; then
             TEXT="❌ Тесты упали%0A${{ github.repository }} @ ${{ github.ref_name }}%0AСмотри: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          elif [ "$DEPLOY_DOCKER" != "success" ]; then
+          elif [ "$BUILD_DOCKER" != "success" ]; then
             TEXT="❌ Обновление образа в Docker Hub упало%0A${{ github.repository }} @ ${{ github.ref_name }}%0AСмотри: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          elif [ "$UPDATE_VPS" != "success" ]; then
+          elif [ "$DEPLOY" != "success" ]; then
             TEXT="❌ Обновление VPS упало%0A${{ github.repository }} @ ${{ github.ref_name }}%0AСмотри: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           else
             TEXT="✅ Деплой успешен%0A${{ github.repository }} | Автор: ${{github.actor}} @ ${{ github.ref_name }}"
