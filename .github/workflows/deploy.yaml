@@ -24,6 +24,7 @@ jobs:
           docker build -t "$DOCKER_USER/$REPO_NAME:$COMMIT_SHA" -t "$DOCKER_USER/$REPO_NAME:latest" .
 
       - name: Login and Push to Docker Hub
+        id: push
         run: |
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "$DOCKER_USER" --password-stdin
           docker push -a "$DOCKER_USER/$REPO_NAME"
