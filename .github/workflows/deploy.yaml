@@ -30,19 +30,8 @@ jobs:
           docker push -a "$DOCKER_USER/$REPO_NAME"
           echo "image_sha=$DOCKER_USER/$REPO_NAME:$COMMIT_SHA" >> $GITHUB_OUTPUT
 
-  echo:
-    needs: [build]
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: ECHO IMAGE_SHA
-        run: |
-          echo ${{ toJSON(needs.build.outputs) }}
-          echo "------------- NEXT -------------------"
-          echo ${{ needs.build.outputs.image_sha }}
-
   deploy:
-    needs: [checks, build, echo]
+    needs: [checks, build]
     runs-on: ubuntu-latest
 
     steps:
