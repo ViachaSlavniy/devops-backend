@@ -13,7 +13,7 @@ jobs:
     outputs:
       image_sha: ${{ steps.push.outputs.image_sha }}
     env:
-      DOCKER_USER: ${{ secrets.DOCKER_USER }}
+      DOCKER_USER: ${{ vars.DOCKER_USER }}
       REPO_NAME: devops-backend
       COMMIT_SHA: sha-${{ github.sha }}
     steps:
@@ -55,7 +55,7 @@ jobs:
           script: |
             cd /var/www/myapp
             sed -i "s|DOCKER_BACKEND_IMAGE=.*|DOCKER_BACKEND_IMAGE=${{ needs.build.outputs.image_sha }}|" .env
-            docker compose up --build -d --no-deps backend
+            docker compose up -d --no-deps backend
 
   notify:
     needs: [checks, build, deploy]
