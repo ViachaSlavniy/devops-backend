@@ -37,12 +37,12 @@ jobs:
     steps:
       - name: ECHO IMAGE_SHA
         run: |
-          echo ${{ needs.build.outputs }}
+          echo ${{ toJSON(needs.build.outputs) }}
           echo "------------- NEXT -------------------"
           echo ${{ needs.build.outputs.image_sha }}
 
   deploy:
-    needs: [checks, build]
+    needs: [checks, build, echo]
     runs-on: ubuntu-latest
 
     steps:
